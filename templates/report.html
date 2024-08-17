@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-12">
+        <h2>Expense Report</h2>
+        {% for table in tables %}
+            <div class="table-responsive">
+                {{ table | safe }}
+            </div>
+        {% endfor %}
+    <h2>Graphs</h2>
+    <div id="bar-chart"></div>
+    <div id="pie-chart"></div>
+    <div id="line-chart"></div>
+    </div>
+</div>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+    {{ bar_chart | safe }}
+    {{ pie_chart | safe }}
+    {{ line_chart | safe }}
+</script>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h2>Upload Receipts</h2>
+        <form action="{{ url_for('upload_files') }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="files">Select Receipts:</label>
+                <input type="file" class="form-control" id="files" name="files" multiple onchange="previewReceipts()">
+            </div>
+            <div class="form-group">
+                <label for="transaction-type">Transaction Type:</label>
+                <select class="form-control" id="transaction-type" name="transaction_type">
+                    <option value="hotel">Hotel</option>
+                    <option value="air">Air</option>
+                    <option value="railways">Railways</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="payment-type">Payment Type:</label>
+                <select class="form-control" id="payment-type" name="payment_type">
+                    <option value="card">Card</option>
+                    <option value="upi">UPI</option>
+                    <option value="cash">Cash</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="currency">Currency:</label>
+                <input type="text" class="form-control" id="currency" name="currency" placeholder="e.g. USD, INR">
+            </div>
+            <div class="form-group">
+                <label for="comment">Additional Comment:</label>
+                <textarea class="form-control" id="comment" name="comment" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+        <a href="{{ url_for('report') }}" class="btn btn-secondary mt-3">Show Expense Report</a>
+    </div>
+    <div class="col-md-4">
+        <h2>Receipt Preview</h2>
+        <div id="receipt-preview" class="border p-3">
+            <p>No receipt uploaded yet.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function previewReceipts() {
+        var preview = document.getElementById('receipt-preview');
+        var files = document.getElementById('files').files;
+
+        // Clear previous content
+        preview.innerHTML = '';
+
+        if (files.length === 0) {
+            preview.innerHTML = '<p>No receipt uploaded yet.</p>';
+            return;
+        }
+
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+
+            if (file.type.startsWith('image/')) {
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    var img = document.createElement('img');
+                    img.src = event.target.result;
+                    img.classList.add('img-fluid', 'mb-2');
+                    preview.appendChild(img);
+                }
+                reader.readAsDataURL(file);
+            } else {
+                var message = document.createElement('p');
+                message.textContent = 'File ' + file.name + ' is not an image';
+                preview.appendChild(message);
+            }
+        }
+    }
+</script>
+{% endblock %}
